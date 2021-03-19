@@ -1,0 +1,21 @@
+
+~
+java:S1488""\Immediately return this expression instead of assigning it to the temporary variable "json".(Îº‘èøÿÿÿÿ8—Ô®Ø‚/
+\
+java:S4719,":Replace Charset.forName() call with StandardCharsets.UTF_8(¬µêùÿÿÿÿ8¶ã®Ø‚/
+W
+java:S1128":Remove this unused import 'java.time.temporal.ChronoUnit'.(Á…§8¤…ö·ƒ/
+R
+java:S1128"5Remove this unused import 'java.time.OffsetDateTime'.(ûùˆı8´İ±ƒ/
+N
+java:S1128"1Remove this unused import 'java.time.ZoneOffset'.(ìÍÄË8Âæİ±ƒ/
+Z	java:S106o"9Replace this use of System.out or System.err by a logger.(“Ÿä¯ıÿÿÿÿ8â©ˆ±ƒ/
+\
+java:S4719 ":Replace Charset.forName() call with StandardCharsets.UTF_8(¬µêùÿÿÿÿ8Èù¬Ø‚/
+
+java:S11306"qRemove the declaration of thrown exception 'java.text.ParseException', as it cannot be thrown from method's body.(ó‰Ó8º¼Ş±ƒ/
+X	java:S125R"<This block of commented-out lines of code should be removed.(ÅÖ«²8®Ú²±ƒ/
+T	java:S106c"9Replace this use of System.out or System.err by a logger.(Çğõ"8®Òü°ƒ/
+U	java:S106d"9Replace this use of System.out or System.err by a logger.(µˆœÑ8«… ±ƒ/
+L
+java:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ8Èù¬Ø‚/
