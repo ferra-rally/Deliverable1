@@ -93,7 +93,7 @@ public class Main {
 
                 if(date.compareTo(minDate) < 0) {
                     minDate = date;
-                }
+               }
 
                 if(date.compareTo(maxDate) > 0) {
                     maxDate = date;

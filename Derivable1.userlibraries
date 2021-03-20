@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="org.json:json:20210307">
+    <archive path="/home/daniele/.m2/repository/org/json/json/20210307/json-20210307.jar" />
+  </library>
+</eclipse-userlibraries>
+
