@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Install dependencies and build project
-          command: ant
+          command: ant -buildfile deliverable1.xml
       - sonarcloud/scan
 
 orbs:

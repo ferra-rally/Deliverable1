@@ -2,7 +2,7 @@
 <project name="derivable1" default="all">
   
   
-  <property file="build.properties"/>
+  <property file="deliverable1.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
