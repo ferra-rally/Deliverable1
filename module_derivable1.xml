@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_derivable1" default="compile.module.derivable1">
+  <dirname property="module.derivable1.basedir" file="${ant.file.module_derivable1}"/>
+  
+  <property name="module.jdk.home.derivable1" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.derivable1" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.derivable1" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.derivable1" value="-encoding UTF-8 -source 15 -target 15 ${compiler.args}"/>
+  
+  <property name="derivable1.output.dir" value="${module.derivable1.basedir}/out/production/Derivable1"/>
+  <property name="derivable1.testoutput.dir" value="${module.derivable1.basedir}/out/test/Derivable1"/>
+  
+  <path id="derivable1.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="derivable1.module.production.classpath">
+    <path refid="${module.jdk.classpath.derivable1}"/>
+    <path refid="library.org.json:json:20210307.classpath"/>
+  </path>
+  
+  <path id="derivable1.runtime.production.module.classpath">
+    <pathelement location="${derivable1.output.dir}"/>
+    <path refid="library.org.json:json:20210307.classpath"/>
+  </path>
+  
+  <path id="derivable1.module.classpath">
+    <path refid="${module.jdk.classpath.derivable1}"/>
+    <pathelement location="${derivable1.output.dir}"/>
+    <path refid="library.org.json:json:20210307.classpath"/>
+  </path>
+  
+  <path id="derivable1.runtime.module.classpath">
+    <pathelement location="${derivable1.testoutput.dir}"/>
+    <pathelement location="${derivable1.output.dir}"/>
+    <path refid="library.org.json:json:20210307.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.derivable1">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.derivable1">
+    <patternset refid="excluded.from.module.derivable1"/>
+  </patternset>
+  
+  <path id="derivable1.module.sourcepath">
+    <dirset dir="${module.derivable1.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.derivable1" depends="compile.module.derivable1.production,compile.module.derivable1.tests" description="Compile module Derivable1"/>
+  
+  <target name="compile.module.derivable1.production" depends="register.custom.compilers" description="Compile module Derivable1; production classes">
+    <mkdir dir="${derivable1.output.dir}"/>
+    <javac2 destdir="${derivable1.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.derivable1}/javac">
+      <compilerarg line="${compiler.args.derivable1}"/>
+      <bootclasspath refid="derivable1.module.bootclasspath"/>
+      <classpath refid="derivable1.module.production.classpath"/>
+      <src refid="derivable1.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.derivable1"/>
+    </javac2>
+    
+    <copy todir="${derivable1.output.dir}">
+      <fileset dir="${module.derivable1.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.derivable1.tests" depends="register.custom.compilers,compile.module.derivable1.production" description="compile module Derivable1; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.derivable1" description="cleanup module">
+    <delete dir="${derivable1.output.dir}"/>
+    <delete dir="${derivable1.testoutput.dir}"/>
+  </target>
+</project>
