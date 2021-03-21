@@ -1,0 +1,7 @@
+organization=ferra-rally
+projectKey=ferra-rally_Deliverable1
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.18399
+dashboardUrl=https://sonarcloud.io/dashboard?id=ferra-rally_Deliverable1
+ceTaskId=AXhVRsKen_M4LyoxHIs-
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AXhVRsKen_M4LyoxHIs-
