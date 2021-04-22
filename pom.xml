@@ -25,6 +25,9 @@
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
+        <sonar.projectKey>ferra-rally_Deliverable1</sonar.projectKey>
+        <sonar.organization>ferra-rally</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     
 </project>
