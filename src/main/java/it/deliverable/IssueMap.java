@@ -1,4 +1,4 @@
-package main.java.it.deliverable;
+package it.deliverable;
 
 import java.io.FileWriter;
 import java.io.IOException;

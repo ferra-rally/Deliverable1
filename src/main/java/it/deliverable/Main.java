@@ -1,4 +1,4 @@
-package main.java.it.deliverable;
+package it.deliverable;
 
 import java.io.*;
 import java.net.URL;
@@ -57,23 +57,65 @@ public class Main {
         }
     }
 
-    public static ZonedDateTime getDateTimeGit(String key, File localPath, Runtime runtime) throws IOException {
+    public static Map<String, ZonedDateTime> getCommitsDate(Runtime runtime, File localPath) throws IOException {
+        HashMap<String, ZonedDateTime> dateMap = new HashMap<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss ZZ");
 
-        Process process = runtime.exec("git log --grep=\"" + key + "[. :]\" --pretty=format:\"%ci\"", null, localPath);
+        Process process = runtime.exec("git log --pretty=format:%ci###%s", null, localPath);
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
         String line;
-        if((line = reader.readLine()) != null) {
-            return ZonedDateTime.parse(line, formatter);
+        while((line = reader.readLine()) != null) {
+            String[] tokens = line.split("###");
+
+            String dateString = tokens[0];
+            ZonedDateTime dateTime = ZonedDateTime.parse(dateString, formatter);
+
+            String key = tokens[1].split(" ")[0];
+            if(key.contains("FALCON")) {
+                if(dateMap.containsKey(key)) {
+                    ZonedDateTime oldTime = dateMap.get(key);
+                    if(oldTime.isBefore(dateTime)) {
+                        dateMap.remove(key);
+                        dateMap.put(key, dateTime);
+                    }
+                } else {
+                    dateMap.put(key, dateTime);
+                }
+            }
         }
 
-        return null;
+        return dateMap;
     }
 
-    public static ZonedDateTime getDateTime(String key, File localPath, Runtime runtime, JSONArray issues, int index) throws IOException{
-        ZonedDateTime date = getDateTimeGit(key, localPath, runtime);
-        if(date == null) {
+    public static ZonedDateTime getDateTimeGit(String key, File localPath, Runtime runtime) throws IOException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss ZZ");
+
+        Process process = runtime.exec("git log --grep=" + key + "[ ] --pretty=format:%ci", null, localPath);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+        ZonedDateTime dateTime = null;
+        boolean first = true;
+
+        String line;
+        while((line = reader.readLine()) != null) {
+            ZonedDateTime newDateTime = ZonedDateTime.parse(line, formatter);
+
+            if(first || dateTime.isBefore(newDateTime)) {
+                first = false;
+                dateTime = newDateTime;
+            }
+        }
+
+        return dateTime;
+    }
+
+    public static ZonedDateTime getDateTime(String key, Map<String, ZonedDateTime> map, JSONArray issues, int index) {
+        ZonedDateTime date;
+
+        if(map.containsKey(key)) {
+            date = map.get(key);
+        } else {
             //If no commits
             String resolutionDate = issues.getJSONObject(index%1000).getJSONObject("fields").get("resolutiondate").toString();
 
@@ -97,7 +139,8 @@ public class Main {
 
         if (!localPath.exists()) {
             LOGGER.log(Level.INFO, "Repository not found, downloading...");
-            //Clone repo from GitHub
+            //Clone repo from GitHub    FALCON-152 REST API for entity & Admin resources only returns XML. Contribtued by Venkatesh Seetharam
+
             Git.cloneRepository()
                     .setURI(PROJECTURL)
                     .setDirectory(localPath)
@@ -108,10 +151,6 @@ public class Main {
 
         Logger logger = Logger.getLogger(Main.class.getName());
 
-        //Get JSON API for closed bugs w/ AV in the project
-        List<ZonedDateTime> dates = new ArrayList<>();
-        List<String> keys = new ArrayList<>();
-
         IssueMap map = new IssueMap();
 
         //Min and Max date to fill missing dates in evalueted period
@@ -119,6 +158,8 @@ public class Main {
         Instant maxInstant = Instant.ofEpochMilli(Long.MIN_VALUE);
         ZonedDateTime minDate = minInstant.atZone(ZoneOffset.UTC);
         ZonedDateTime maxDate = maxInstant.atZone(ZoneOffset.UTC);
+
+        Map<String, ZonedDateTime> dateMap = getCommitsDate(runtime, localPath);
 
         do {
             //Only gets a max of 1000 at a time, so must do this multiple times if bugs >1000
@@ -133,7 +174,7 @@ public class Main {
             for (; i < total && i < j; i++) {
                 //Iterate through each bug
                 String key = issues.getJSONObject(i%1000).get("key").toString();
-                ZonedDateTime date = getDateTime(key, localPath, runtime, issues, i);
+                ZonedDateTime date = getDateTime(key, dateMap, issues, i);
                 String dateString = DateTimeFormatter.ofPattern("yyyy-MM").format(date);
 
                 if(date.compareTo(minDate) < 0) {
@@ -149,9 +190,6 @@ public class Main {
                 } else {
                     map.put(dateString, 1);
                 }
-
-                dates.add(date);
-                keys.add(key);
             }
         } while (i < total);
 
