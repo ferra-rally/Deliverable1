@@ -12,11 +12,8 @@ public class IssueMap extends TreeMap<String, Integer> {
         //Add missing dates
         for(ZonedDateTime testDate = minDate; testDate.compareTo(maxDate) <= 0; testDate = testDate.plusMonths(1)) {
             String dateString = DateTimeFormatter.ofPattern("yyyy-MM").format(testDate);
-            if(this.containsKey(dateString)) {
-                this.put(dateString, this.get(dateString) + 1);
-            } else {
-                this.put(dateString, 0);
-            }
+
+            this.putIfAbsent(dateString, 0);
         }
     }
 
