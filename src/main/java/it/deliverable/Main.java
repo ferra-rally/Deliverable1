@@ -165,16 +165,18 @@ public class Main {
             //Only gets a max of 1000 at a time, so must do this multiple times if bugs >1000
             j = i + 1000;
             String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22" + projName +
-                    //"%22AND(%22status%22=%22closed%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt="
-                    "%22%20AND%20(%22status%22=%22closed%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt="
+                    "%22AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt="
+                    //"%22%20AND%20(%22status%22=%22closed%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt="
                     + i + "&maxResults=" + Integer.toString(j);
             JSONObject json = readJsonFromUrl(url);
             JSONArray issues = json.getJSONArray("issues");
+
             total = json.getInt("total");
             for (; i < total && i < j; i++) {
                 //Iterate through each bug
                 String key = issues.getJSONObject(i%1000).get("key").toString();
                 ZonedDateTime date = getDateTime(key, dateMap, issues, i);
+
                 String dateString = DateTimeFormatter.ofPattern("yyyy-MM").format(date);
 
                 if(date.compareTo(minDate) < 0) {
@@ -197,6 +199,8 @@ public class Main {
         map.addMissingDates(minDate, maxDate);
 
         logger.log(Level.INFO,"Done generating map");
+
+        logger.log(Level.INFO,"Map size {0}", map.size());
 
         //Write to csv file
         map.writeToCsv(outFileName);
